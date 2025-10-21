@@ -5,37 +5,8 @@ import {
   isConnected,
   request,
 } from "@stacks/connect";
-import type { AxiosInstance } from "axios";
 import { useCallback, useEffect, useState } from "react";
-import config from "@/lib/config/client";
-import type {
-  LoginRequest,
-  LoginResponse,
-  NonceRequest,
-  NonceResponse,
-  UserProfileResponse,
-} from "@/lib/types/auth";
 import { useAuthSession } from "@/providers/auth-session-provider";
-import { useAPIClient } from "./api-client";
-
-async function _login(
-  client: AxiosInstance,
-  data: LoginRequest,
-  onSuccess?: (response: LoginResponse) => void,
-): Promise<LoginResponse> {
-  const response = await client.post<LoginResponse>("/auth/login", data);
-  if (onSuccess) {
-    onSuccess(response.data);
-  }
-  return response.data;
-}
-
-async function _getCurrentUser(
-  client: AxiosInstance,
-): Promise<UserProfileResponse> {
-  const response = await client.get<UserProfileResponse>("/auth/me");
-  return response.data;
-}
 
 async function _connectWallet(connected: boolean) {
   if (!connected) {
@@ -67,93 +38,19 @@ async function _connectWallet(connected: boolean) {
   }
 }
 
-async function _generateNonce(
-  client: AxiosInstance,
-  data: NonceRequest,
-): Promise<NonceResponse> {
-  const response = await client.post<NonceResponse>("/auth/nonce", data);
-  return response.data;
-}
-
-async function _generateAuthMessage(
-  client: AxiosInstance,
-  walletAddress: string,
-  domain: string,
-): Promise<string> {
-  try {
-    const response = await _generateNonce(client, { walletAddress });
-    return response.message;
-  } catch (error) {
-    console.error("Error generating auth message:", error);
-    // Fallback to local generation if API fails
-    const timestamp = new Date().toISOString();
-    const randomNonce = Math.random().toString(36).substring(2);
-    let message = "Sign this message to authenticate with Stacks dApp\n";
-    message += `\nDomain: ${domain}`;
-    message += `\nWallet Address: ${walletAddress}`;
-    message += `\nTimestamp: ${timestamp}`;
-    message += `\nNonce: ${randomNonce}`;
-    message += `\n\nBy signing this message, you confirm that you are the owner of this wallet address and agree to authenticate with Stacks dApp.`;
-    return message;
-  }
-}
-
 export function useWallet() {
-  const client = useAPIClient();
   const { session, clearSession, setSession } = useAuthSession();
   const [connected, setConnected] = useState(false);
   const [data, setData] = useState<{
     address: string;
     publicKey?: string;
   } | null>(null);
-  const [domain, setDomain] = useState(config.apiUrl);
-
-  // Update domain when window.location.origin changes
-  useEffect(() => {
-    setDomain(window.location.origin);
-  }, []);
-
-  const refreshCurrentUser = useCallback(async () => {
-    if (!session) {
-      throw new Error("No session found");
-    }
-    const response = await _getCurrentUser(client);
-    setSession({
-      ...session,
-      user: response.user,
-      token: session.token,
-    });
-  }, [client, session, setSession]);
-
-  const loginWithWallet = useCallback(
-    async (data: LoginRequest) => {
-      const response = await _login(client, data, (response) =>
-        setSession({
-          user: response.user,
-          token: response.token,
-        }),
-      );
-      return response;
-    },
-    [client, setSession],
-  );
-
-  const generateAuthMessage = useCallback(
-    async (walletAddress: string) => {
-      const response = await _generateAuthMessage(
-        client,
-        walletAddress,
-        domain,
-      );
-      return response;
-    },
-    [client, domain],
-  );
 
   const connectWallet = useCallback(async () => {
     const [address, publicKey] = await _connectWallet(connected);
     setData({ address, publicKey });
     setConnected(true);
+    setSession({ user: { walletAddress: address } });
     return [address, publicKey];
   }, [connected]);
 
@@ -186,6 +83,7 @@ export function useWallet() {
           return;
         }
         setConnected(true);
+        setSession({ user: { walletAddress: stxAddress } });
         setData({ address: stxAddress });
       } else {
         if (session) {
@@ -223,8 +121,5 @@ export function useWallet() {
     isConnected: connected,
     connect: connectWallet,
     disconnect: disconnectWallet,
-    loginWithWallet,
-    generateAuthMessage,
-    refreshCurrentUser,
   };
 }

@@ -1,34 +1,52 @@
 ---
-description: Guidelines for Stacks blockchain development
+globs: *.ts,*.tsx,hooks/*,providers/*
 ---
 
-# Stacks Development Guidelines
+# Stacks Blockchain Development
+
+This project integrates with the Stacks blockchain for wallet connection and smart contract interaction.
 
 ## Wallet Integration
-- Use [@stacks/connect](https://github.com/stacks-network/connect) for wallet connections
-- Always handle wallet connection states properly in [hooks/wallet.ts](mdc:hooks/wallet.ts)
-- Implement proper error handling for wallet operations
-- Use the `useWallet` hook for all wallet-related functionality
 
-## Authentication
-- JWT tokens are used for API authentication with wallet signatures
-- API endpoints follow RESTful patterns in `app/api/auth/`
-- Always verify signatures before creating sessions
-- Use [lib/auth/jwt.ts](mdc:lib/auth/jwt.ts) for token operations
+- **Wallet Hook**: [hooks/wallet.ts](mdc:hooks/wallet.ts) provides `useWallet()` hook
+- **Connection Flow**: Uses `@stacks/connect` for wallet connection
+- **Session Management**: [providers/auth-session-provider.tsx](mdc:providers/auth-session-provider.tsx) manages authentication state
+- **Storage**: Uses localStorage for session persistence
+
+## Key Patterns
+
+### Wallet Connection
+```typescript
+const { data, isConnected, connect, disconnect } = useWallet();
+```
+
+### Session Management
+```typescript
+const { session, setSession, clearSession } = useAuthSession();
+```
+
+## Stacks Dependencies
+
+- `@stacks/connect` - Wallet connection library
+- `@stacks/network` - Network configuration
+- `@stacks/transactions` - Transaction building
 
 ## Smart Contracts
-- Contracts are located in [contracts/](mdc:contracts/) directory
-- Use Clarinet for contract development and testing
-- Follow Stacks naming conventions for contract functions
-- Always include proper error handling in contract functions
 
-## Database
-- Use Prisma with MongoDB for data persistence
-- User model in [prisma/schema.prisma](mdc:prisma/schema.prisma) includes wallet address and connection history
-- Always use database utilities in [lib/db/user.ts](mdc:lib/db/user.ts) for user operations
+- **Clarinet**: Use [contracts/Clarinet.toml](mdc:contracts/Clarinet.toml) for contract development
+- **Testing**: Vitest configuration in [contracts/vitest.config.js](mdc:contracts/vitest.config.js)
+- **TypeScript**: Contract types in [contracts/tsconfig.json](mdc:contracts/tsconfig.json)
 
-## API Development
-- Follow the patterns established in `app/api/auth/` for new endpoints
-- Use Zod for request validation
-- Implement proper error handling with consistent response formats
-- Always include TypeScript types for requests and responses
+## Environment Configuration
+
+- **Client Config**: [lib/config/client.ts](mdc:lib/config/client.ts) for client-side environment variables
+- **Server Config**: [lib/config/server.ts](mdc:lib/config/server.ts) for server-side configuration
+- **Validation**: Zod schemas for environment variable validation
+
+## Best Practices
+
+1. Always validate wallet connection state before making transactions
+2. Use proper error handling for wallet operations
+3. Implement proper session cleanup on disconnect
+4. Validate environment variables at startup
+5. Use TypeScript for type safety in wallet interactions

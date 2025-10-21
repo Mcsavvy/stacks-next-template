@@ -1,50 +1,35 @@
 # Stacks Next.js Template
 
-A production-ready Next.js template for building Stacks blockchain applications with wallet authentication, smart contract integration, and modern UI components.
+A modern Next.js 15 template for building Stacks blockchain applications with TypeScript, Tailwind CSS, and comprehensive tooling.
 
 ## 🚀 Features
 
-- **🔗 Wallet Integration**: Seamless Stacks wallet connection using `@stacks/connect`
-- **🔐 JWT Authentication**: Secure authentication with wallet signatures
-- **📱 Modern UI**: Beautiful, responsive interface with Tailwind CSS and Radix UI
-- **🗄️ Database Ready**: MongoDB integration with Prisma ORM
-- **📝 Type Safety**: Full TypeScript support with proper type definitions
-- **🛠️ Smart Contracts**: Clarinet integration for Stacks smart contract development
-- **🎨 Component Library**: Pre-built UI components following design system patterns
-- **📊 API Routes**: RESTful API endpoints for authentication and user management
-- **🔧 Developer Experience**: Biome for linting/formatting, hot reload, and more
+- **Next.js 15** with App Router and Turbopack
+- **TypeScript** with strict configuration
+- **Tailwind CSS** for styling
+- **Stacks Integration** with wallet connection
+- **Component Library** built on Radix UI
+- **Biome** for linting and formatting
+- **Smart Contract Development** with Clarinet
+- **Environment Configuration** with Zod validation
 
-## 🏗️ Project Structure
+## 📦 Tech Stack
 
-```
-├── app/                    # Next.js 13+ app router
-│   ├── api/auth/          # Authentication API endpoints
-│   ├── layout.tsx         # Root layout with providers
-│   └── page.tsx           # Main wallet connection page
-├── components/            # React components
-│   ├── ui/               # Reusable UI components
-├── hooks/                # Custom React hooks
-│   ├── wallet.ts         # Wallet connection and auth
-│   └── api-client.ts     # API client with auth
-├── lib/                  # Utility libraries
-│   ├── auth/            # JWT and authentication utilities
-│   ├── db/              # Database operations
-│   ├── config/          # Configuration files
-│   └── types/           # TypeScript type definitions
-├── providers/           # React context providers
-├── contracts/           # Stacks smart contracts
-├── prisma/             # Database schema and migrations
-└── _docs/              # Documentation
-```
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Radix UI + CVA
+- **Blockchain**: Stacks Connect
+- **Linting**: Biome
+- **Smart Contracts**: Clarinet
 
-## 🚀 Quick Start
+## 🛠️ Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ 
 - pnpm (recommended) or npm
-- MongoDB database
-- Stacks wallet (Hiro Wallet, Xverse, etc.)
+- Git
 
 ### Installation
 
@@ -57,6 +42,8 @@ A production-ready Next.js template for building Stacks blockchain applications 
 2. **Install dependencies**
    ```bash
    pnpm install
+   # or
+   npm install
    ```
 
 3. **Set up environment variables**
@@ -64,174 +51,223 @@ A production-ready Next.js template for building Stacks blockchain applications 
    cp .env.example .env.local
    ```
    
-   Update `.env.local` with your configuration:
+   Edit `.env.local` with your configuration:
    ```env
-   # Database
-   DATABASE_URL="mongodb://localhost:27017/stacks-next-template"
-   
-   # JWT Secret (change this in production)
-   JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
-   
-   # API Configuration
-   NEXT_PUBLIC_API_URL="http://localhost:3000/api"
+   NEXT_PUBLIC_APP_NAME="Your App Name"
    ```
 
-4. **Set up the database**
-   ```bash
-   pnpm db:push
-   ```
-
-5. **Start the development server**
+4. **Start the development server**
    ```bash
    pnpm dev
+   # or
+   npm run dev
    ```
 
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 🔧 Available Scripts
+## 🏗️ Project Structure
+
+```
+├── app/                    # Next.js App Router
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Home page
+│   └── globals.css        # Global styles
+├── components/            # Reusable components
+│   └── ui/               # Base UI components
+├── hooks/                # Custom React hooks
+├── lib/                  # Utilities and configuration
+│   └── config/          # Environment configuration
+├── providers/           # React context providers
+├── contracts/           # Stacks smart contracts
+└── .cursor/rules/       # Cursor AI rules
+```
+
+## 🔧 Development
+
+### Available Scripts
 
 ```bash
 # Development
-pnpm dev              # Start development server with Turbopack
-pnpm build            # Build for production
-pnpm start            # Start production server
+pnpm dev          # Start development server with Turbopack
+pnpm build        # Build for production
+pnpm start        # Start production server
 
 # Code Quality
-pnpm lint             # Run Biome linter
-pnpm format           # Format code with Biome
-
-# Database
-pnpm db:generate      # Generate Prisma client
-pnpm db:push          # Push schema changes to database
-pnpm db:reset         # Reset database (development only)
-pnpm db:studio        # Open Prisma Studio
+pnpm lint         # Run Biome linter
+pnpm format       # Format code with Biome
 ```
 
-## 🔐 Authentication Flow
+### Wallet Integration
 
-The template implements a complete wallet-based authentication system:
+The template includes a complete wallet integration system:
 
-1. **Wallet Connection**: Users connect their Stacks wallet
-2. **Nonce Generation**: Server generates a unique nonce for signing
-3. **Message Signing**: User signs an authentication message
-4. **JWT Token**: Server verifies signature and issues JWT token
-5. **Session Management**: Client stores session and includes token in API requests
+```typescript
+// Use the wallet hook in your components
+import { useWallet } from "@/hooks/wallet";
 
-### API Endpoints
-
-- `POST /api/auth/nonce` - Generate authentication nonce
-- `POST /api/auth/login` - Authenticate with wallet signature  
-- `GET /api/auth/me` - Get current user profile
-
-See [`_docs/API_ENDPOINTS.md`](_docs/API_ENDPOINTS.md) for detailed API documentation.
-
-## 🎨 UI Components
-
-The template includes a comprehensive set of UI components:
-
-- **Button**: Multiple variants and sizes
-- **Card**: Content containers with header, body, and footer
-- **Input**: Form input components
-- **Wallet Connection**: Complete wallet connection interface
-
-All components follow design system patterns and support dark mode.
-
-## 🗄️ Database Schema
-
-The template uses MongoDB with Prisma ORM. The main user model includes:
-
-```prisma
-model User {
-  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
-  walletAddress      String
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  lastLoginAt        DateTime?
-  loginCount         Int      @default(0)
-  connectionHistory  Json
-  @@map("users")
+export function WalletButton() {
+  const { data, isConnected, connect, disconnect } = useWallet();
+  
+  if (isConnected) {
+    return (
+      <div>
+        <p>Connected: {data?.address}</p>
+        <button onClick={disconnect}>Disconnect</button>
+      </div>
+    );
+  }
+  
+  return <button onClick={connect}>Connect Wallet</button>;
 }
 ```
 
-## 🔗 Smart Contract Integration
+### Session Management
 
-The template includes Clarinet configuration for Stacks smart contract development:
+Authentication state is managed through React Context:
 
-- **Clarinet.toml**: Project configuration
-- **contracts/**: Smart contract source files
-- **tests/**: Contract test files
-- **settings/**: Network-specific settings (Devnet, Testnet, Mainnet)
+```typescript
+import { useAuthSession } from "@/providers/auth-session-provider";
 
-## 🛠️ Development Guidelines
+export function UserProfile() {
+  const { session, loading } = useAuthSession();
+  
+  if (loading) return <div>Loading...</div>;
+  if (!session) return <div>Please connect your wallet</div>;
+  
+  return <div>Welcome, {session.user.walletAddress}</div>;
+}
+```
+
+## 🎨 UI Components
+
+The template includes a comprehensive component library:
+
+```typescript
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+
+export function ExampleComponent() {
+  return (
+    <Card>
+      <Input placeholder="Enter your name" />
+      <Button variant="default">Submit</Button>
+    </Card>
+  );
+}
+```
+
+### Available Components
+
+- **Button** - Multiple variants (default, destructive, outline, etc.)
+- **Card** - Container component
+- **Input** - Form input component
+
+## 🔗 Smart Contract Development
+
+### Setup Clarinet
+
+1. **Install Clarinet** (if not already installed)
+   ```bash
+   # macOS
+   brew install clarinet
+   
+   # Linux/Windows
+   # Follow instructions at https://docs.hiro.so/clarinet/getting-started
+   ```
+
+2. **Initialize contracts**
+   ```bash
+   cd contracts
+   pnpm install
+   ```
+
+3. **Start Clarinet console**
+   ```bash
+   clarinet console
+   ```
+
+### Contract Development
+
+- Write contracts in `contracts/contracts/`
+- Tests in `contracts/tests/`
+- Configuration in `contracts/Clarinet.toml`
+
+## 🌐 Environment Configuration
+
+The template uses Zod for environment variable validation:
+
+### Client Configuration
+```typescript
+// lib/config/client.ts
+export const envSchema = z.object({
+  NEXT_PUBLIC_APP_NAME: z.string().default("Stacks Next Template"),
+});
+```
+
+### Server Configuration
+```typescript
+// lib/config/server.ts
+const envSchema = z.object({}).extend(clientEnvSchema.shape);
+```
+
+## 🎯 Best Practices
 
 ### Code Quality
-- Use Biome for linting and formatting
-- Follow TypeScript best practices
-- Implement proper error handling
-- Use semantic commit messages
+- Use TypeScript strict mode
+- Follow the established patterns in the codebase
+- Run `pnpm lint` before committing
+- Use proper error handling
 
 ### Component Development
-- Use existing UI components from `components/ui/`
-- Implement proper loading and error states
-- Use TypeScript for all props and state
+- Use functional components with hooks
+- Implement proper TypeScript interfaces
+- Follow the component library patterns
+- Include accessibility attributes
 
-### API Development
-- Follow RESTful patterns
-- Use Zod for request validation
-- Implement proper error responses
-- Use the authentication middleware for protected routes
-
-## 📚 Documentation
-
-- [`_docs/API_ENDPOINTS.md`](_docs/API_ENDPOINTS.md) - Complete API documentation
-- [Cursor Rules](.cursor/rules/) - Development guidelines and patterns
+### Wallet Integration
+- Always check connection state before transactions
+- Implement proper error handling
+- Use the provided session management
+- Validate wallet responses
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Build for Production
 
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Set environment variables in Vercel dashboard
-4. Deploy!
+```bash
+pnpm build
+```
 
-### Other Platforms
+### Deploy to Vercel
+
+1. Push to GitHub
+2. Connect to Vercel
+3. Set environment variables
+4. Deploy
+
+### Deploy to Other Platforms
 
 The template works with any platform that supports Next.js:
 - Netlify
-- Railway
-- DigitalOcean App Platform
 - AWS Amplify
+- Railway
+- Render
+
+## 📚 Additional Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Stacks Documentation](https://docs.stacks.co)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [Radix UI](https://www.radix-ui.com)
+- [Clarinet Documentation](https://docs.hiro.so/clarinet)
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🔗 Useful Links
-
-- [Stacks Documentation](https://docs.stacks.co/)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Prisma Documentation](https://www.prisma.io/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [Radix UI Documentation](https://www.radix-ui.com/)
-
-## 🆘 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [documentation](_docs/)
-2. Search existing [GitHub Issues](https://github.com/Mcsavvy/stacks-next-template/issues)
-3. Create a new issue with detailed information
-
----
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
 
 **Happy building! 🚀**
