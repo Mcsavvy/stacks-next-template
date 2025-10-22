@@ -10,8 +10,7 @@ A modern Next.js 15 template for building Stacks blockchain applications with Ty
 - **Stacks Integration** with wallet connection
 - **Component Library** built on Radix UI
 - **Biome** for linting and formatting
-- **Smart Contract Development** with Clarinet
-- **Environment Configuration** with Zod validation
+- **Environment Configuratin** with Zod validation
 
 ## 📦 Tech Stack
 
@@ -21,7 +20,6 @@ A modern Next.js 15 template for building Stacks blockchain applications with Ty
 - **UI Components**: Radix UI + CVA
 - **Blockchain**: Stacks Connect
 - **Linting**: Biome
-- **Smart Contracts**: Clarinet
 
 ## 🛠️ Getting Started
 
@@ -78,7 +76,6 @@ A modern Next.js 15 template for building Stacks blockchain applications with Ty
 ├── lib/                  # Utilities and configuration
 │   └── config/          # Environment configuration
 ├── providers/           # React context providers
-├── contracts/           # Stacks smart contracts
 └── .cursor/rules/       # Cursor AI rules
 ```
 
@@ -163,36 +160,6 @@ export function ExampleComponent() {
 - **Card** - Container component
 - **Input** - Form input component
 
-## 🔗 Smart Contract Development
-
-### Setup Clarinet
-
-1. **Install Clarinet** (if not already installed)
-   ```bash
-   # macOS
-   brew install clarinet
-   
-   # Linux/Windows
-   # Follow instructions at https://docs.hiro.so/clarinet/getting-started
-   ```
-
-2. **Initialize contracts**
-   ```bash
-   cd contracts
-   pnpm install
-   ```
-
-3. **Start Clarinet console**
-   ```bash
-   clarinet console
-   ```
-
-### Contract Development
-
-- Write contracts in `contracts/contracts/`
-- Tests in `contracts/tests/`
-- Configuration in `contracts/Clarinet.toml`
-
 ## 🌐 Environment Configuration
 
 The template uses Zod for environment variable validation:
@@ -260,7 +227,6 @@ The template works with any platform that supports Next.js:
 - [Stacks Documentation](https://docs.stacks.co)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [Radix UI](https://www.radix-ui.com)
-- [Clarinet Documentation](https://docs.hiro.so/clarinet)
 
 ## 🤝 Contributing
 

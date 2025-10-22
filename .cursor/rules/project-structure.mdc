@@ -31,9 +31,6 @@ This is a Next.js 15 template for Stacks blockchain applications with TypeScript
 - **`providers/`** - React context providers
   - [auth-session-provider.tsx](mdc:providers/auth-session-provider.tsx) - Authentication session management
 
-- **`contracts/`** - Stacks smart contracts
-  - [Clarinet.toml](mdc:contracts/Clarinet.toml) - Clarinet configuration
-  - `package.json` - Contract dependencies
 
 ## Key Files
 
