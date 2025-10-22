@@ -6,11 +6,12 @@ import {
   request,
 } from "@stacks/connect";
 import { useCallback, useEffect, useState } from "react";
+import config from "@/lib/config/client";
 import { useAuthSession } from "@/providers/auth-session-provider";
 
 async function _connectWallet(connected: boolean) {
   if (!connected) {
-    const response = await connect();
+    const response = await connect({ network: config.stacksNetwork });
     const account = response.addresses.find(
       (address) => address.symbol === "STX",
     );
@@ -46,6 +47,7 @@ export function useWallet() {
     publicKey?: string;
   } | null>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: not needed
   const connectWallet = useCallback(async () => {
     const [address, publicKey] = await _connectWallet(connected);
     setData({ address, publicKey });
@@ -54,6 +56,7 @@ export function useWallet() {
     return [address, publicKey];
   }, [connected]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: not needed
   useEffect(() => {
     const checkConnection = () => {
       const connected = isConnected();
@@ -105,7 +108,7 @@ export function useWallet() {
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [session, clearSession]);
+  }, [setSession, clearSession]);
 
   const disconnectWallet = useCallback(() => {
     disconnect();
